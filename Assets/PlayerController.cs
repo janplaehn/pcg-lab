@@ -24,13 +24,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private KeyCode LeftKey = KeyCode.A;
     [SerializeField] private KeyCode JumpKey = KeyCode.Space;
 
-    [SerializeField] private Rigidbody RB = null;
+    [SerializeField] private Rigidbody2D RB = null;
 
     private bool OnGround = false;
 
-    void Start()
-    {
-        
+    private void Awake() {
+        RB.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     void Update()
@@ -58,12 +57,12 @@ public class PlayerController : MonoBehaviour
             AirControls(Direction.LEFT);
     }
 
-    private void OnCollisionEnter(Collision pCollision)
+    private void OnCollisionStay2D(Collision2D pCollision)
     {
         OnGround = true;
     }
 
-    private void OnCollisionExit(Collision pCollision)
+    private void OnCollisionExit2D(Collision2D pCollision)
     {
         OnGround = false;
     }
@@ -74,11 +73,11 @@ public class PlayerController : MonoBehaviour
             return;
         if (pDirection == Direction.RIGHT)
         {
-            RB.velocity += (Vector3.right * (MaxRunSpeed / SecondsToMaxSpeed) * Time.deltaTime);
+            RB.velocity += (Vector2.right * (MaxRunSpeed / SecondsToMaxSpeed) * Time.deltaTime);
         }
         else if (pDirection == Direction.LEFT)
         {
-            RB.velocity += (Vector3.left * (MaxRunSpeed / SecondsToMaxSpeed) * Time.deltaTime);
+            RB.velocity += (Vector2.left * (MaxRunSpeed / SecondsToMaxSpeed) * Time.deltaTime);
         }
     }
 

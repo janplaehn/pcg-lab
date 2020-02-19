@@ -7,6 +7,7 @@ using UnityEditor;
 
 [ExecuteInEditMode]
 class OverlapWFC : MonoBehaviour{
+    public bool generateOnStart = false;
 	public Training training = null;
 	public int gridsize = 1;
 	public int width = 20;
@@ -60,7 +61,9 @@ class OverlapWFC : MonoBehaviour{
 	void Awake(){}
 
 	void Start(){
-		Generate();
+		if (generateOnStart) {
+            Generate();
+        }
 	}
 
 	void Update(){
