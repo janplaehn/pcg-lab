@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7716672355368312093}
   m_Layer: 0
-  m_Name: FreestandingCenter
-  m_TagString: Untagged
+  m_Name: 0000
+  m_TagString: Breakable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 2486000110696993637}
   m_Layer: 0
   m_Name: Sprite
-  m_TagString: Untagged
+  m_TagString: Breakable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -11,6 +11,7 @@ public class CAMapGenerator : MonoBehaviour {
     public int cellWidth = 1;
     public int cellHeight = 1;
 
+    public Transform backgroundTile = null;
     public Tile[] tiles = new Tile[16];
 
     [System.Serializable]
@@ -47,10 +48,13 @@ public class CAMapGenerator : MonoBehaviour {
     }
 
     private void SetTile(int x, int y) {
+        Vector3 position = new Vector3((-width / 2 + x + .5f) * cellWidth, (-height / 2 + y + .5f) * cellHeight, 0);
+
+        Instantiate(backgroundTile, position, Quaternion.identity, transform);
         if (caGenerator.GetTile(x, y) == 0) {
             return;
         }
-        Vector3 position = new Vector3((-width / 2 + x + .5f) * cellWidth, (-height / 2 + y + .5f) * cellHeight, 0);
+
         string neighbours = caGenerator.GetNeighboursAsBinary(x, y);
         Transform tile = GetPrefabFromBinary(neighbours);
         Instantiate(tile, position, Quaternion.identity, transform);
