@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8210789421589380178}
   - component: {fileID: 1049009235040526725}
   - component: {fileID: 177529632243954246}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sprite
   m_TagString: Breakable
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5467824252950592574}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: 0012
   m_TagString: Breakable
   m_Icon: {fileID: 0}

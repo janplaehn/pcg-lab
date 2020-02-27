@@ -18,11 +18,11 @@ public class CellularAutomataGenerator : MonoBehaviour
     public string seed = "Mexico";
     public bool useRandomSeed = false;
     [Range(0,100)] public int fillAmount = 56;
+    public int birthLimit = 4;
+    public int deathLimit = 4;
     public int smoothIterations = 3;
     public BlendMode blendMode = BlendMode.Minimum;
     [Range(1, 20)] public int blendLayers = 5;
-
-    private readonly int smoothThreshold = 4;
 
     private int[,] map = null;
     private int[,] layeredMap = null;
@@ -97,7 +97,7 @@ public class CellularAutomataGenerator : MonoBehaviour
     private void SetSeed() {
         currentSeed = seed + currentLayer.ToString();
         if (useRandomSeed) {
-            currentSeed = Time.time.ToString();
+            currentSeed = Time.time.ToString() + currentLayer.ToString();
         }
 
     }
@@ -116,10 +116,10 @@ public class CellularAutomataGenerator : MonoBehaviour
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int neighbourWallTiles = GetSurroundingWallCount(x, y);
-                if (neighbourWallTiles > smoothThreshold) {
+                if (neighbourWallTiles > birthLimit) {
                     map[x, y] = 1;
                 }
-                else if (neighbourWallTiles < smoothThreshold) {
+                else if (neighbourWallTiles < deathLimit) {
                     map[x, y] = 0;
                 }
             }

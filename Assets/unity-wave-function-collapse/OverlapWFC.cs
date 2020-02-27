@@ -23,9 +23,12 @@ class OverlapWFC : MonoBehaviour{
 	public bool incremental = false;
 	public OverlappingModel model = null;
 	public GameObject[,] rendering;
+    private int[,] tiles;
 	public GameObject output;
 	private Transform group;
     private bool undrawn = true;
+
+    public Transform wallTile = null;
 
 	public static bool IsPrefabRef(UnityEngine.Object o){
 		#if UNITY_EDITOR
@@ -135,7 +138,10 @@ class OverlapWFC : MonoBehaviour{
 							Vector3 pos = new Vector3(x*gridsize, y*gridsize, 0f);
 							int rot = (int)training.RS[v];
 							GameObject fab = training.tiles[v] as GameObject;
-							if (fab != null){
+                            if (x == 0 || x == width - 2 || y == 0 || y == depth - 2) {
+                                fab = wallTile.gameObject;
+                            }
+                                if (fab != null){
 								GameObject tile = (GameObject)Instantiate(fab, new Vector3() , Quaternion.identity);
 								Vector3 fscale = tile.transform.localScale;
 								tile.transform.parent = group;

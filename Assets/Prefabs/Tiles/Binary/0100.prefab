@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8825678113975535367}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: 0100
   m_TagString: Breakable
   m_Icon: {fileID: 0}
@@ -41,8 +41,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4640980522167666539}
   - component: {fileID: 4545348206864685756}
-  - component: {fileID: 3741418206943807871}
-  m_Layer: 0
+  - component: {fileID: 8021558206624908030}
+  m_Layer: 8
   m_Name: Sprite
   m_TagString: Breakable
   m_Icon: {fileID: 0}
@@ -112,8 +112,8 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &3741418206943807871
-BoxCollider2D:
+--- !u!60 &8021558206624908030
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -135,6 +135,18 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.28, y: 1.28}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.64, y: 0.64}
+      - {x: -0.64, y: 0.25}
+      - {x: -0.57, y: 0.14}
+      - {x: -0.39, y: 0.11}
+      - {x: -0.19, y: -0.089999996}
+      - {x: -0.04, y: -0.14}
+      - {x: 0.14999999, y: -0.19}
+      - {x: 0.14999999, y: -0.26}
+      - {x: 0.13, y: -0.32999998}
+      - {x: 0.26, y: -0.44}
+      - {x: 0.44, y: -0.44}
+      - {x: 0.64, y: -0.39999998}
+      - {x: 0.64, y: 0.64}
