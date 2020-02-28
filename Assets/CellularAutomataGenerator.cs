@@ -23,6 +23,7 @@ public class CellularAutomataGenerator : MonoBehaviour
     public int smoothIterations = 3;
     public BlendMode blendMode = BlendMode.Minimum;
     [Range(1, 20)] public int blendLayers = 5;
+    public int centerCircleRadius = 5;
 
     private int[,] map = null;
     private int[,] layeredMap = null;
@@ -107,6 +108,10 @@ public class CellularAutomataGenerator : MonoBehaviour
             map[x, y] = 1;
             return;
         }
+        if (GetDistanceToCenter(x,y) <= centerCircleRadius) {
+            map[x, y] = 0;
+            return;
+        }
 
         int r = random.Next(0, 100);
         map[x, y] = (r < fillAmount) ? 1 : 0; //if it is smaller, pick 1, otherwise 0
@@ -124,6 +129,19 @@ public class CellularAutomataGenerator : MonoBehaviour
                 }
             }
         }
+    }
+
+    private float GetDistanceToCenter(int x, int y) {
+        Vector2Int position = new Vector2Int(x, y);
+        Vector2Int center = GetCenter();
+        float distance = (position - center).magnitude;
+        return distance;
+    }
+
+    private Vector2Int GetCenter() {
+        int centerX = GetWidth() / 2;
+        int centerY = GetHeight() / 2;
+        return new Vector2Int(centerX, centerY);
     }
 
     private int GetSurroundingWallCount(int gridX, int gridY) {

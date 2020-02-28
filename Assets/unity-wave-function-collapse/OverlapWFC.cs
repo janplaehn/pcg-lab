@@ -27,10 +27,12 @@ class OverlapWFC : MonoBehaviour{
 	public GameObject output;
 	private Transform group;
     private bool undrawn = true;
+    public float centerCircleRadius = 3;
 
     public Transform wallTile = null;
+    public Transform backgroundTile = null;
 
-	public static bool IsPrefabRef(UnityEngine.Object o){
+    public static bool IsPrefabRef(UnityEngine.Object o){
 		#if UNITY_EDITOR
 		return PrefabUtility.GetOutermostPrefabInstanceRoot(o) != null;
 		#else
@@ -61,7 +63,20 @@ class OverlapWFC : MonoBehaviour{
 		}
 	}
 
-	void Awake(){}
+    private float GetDistanceToCenter(int x, int y) {
+        Vector2Int position = new Vector2Int(x, y);
+        Vector2Int center = GetCenter();
+        float distance = (position - center).magnitude;
+        return distance;
+    }
+
+    private Vector2Int GetCenter() {
+        int centerX = width / 2;
+        int centerY = depth / 2;
+        return new Vector2Int(centerX, centerY);
+    }
+
+    void Awake(){}
 
 	void Start(){
 		if (generateOnStart) {
@@ -141,6 +156,9 @@ class OverlapWFC : MonoBehaviour{
                             if (x == 0 || x == width - 2 || y == 0 || y == depth - 2) {
                                 fab = wallTile.gameObject;
                             }
+                            if (GetDistanceToCenter(x,y) < centerCircleRadius) {
+                                fab = backgroundTile.gameObject;
+                            }
                                 if (fab != null){
 								GameObject tile = (GameObject)Instantiate(fab, new Vector3() , Quaternion.identity);
 								Vector3 fscale = tile.transform.localScale;
@@ -150,7 +168,8 @@ class OverlapWFC : MonoBehaviour{
 								tile.transform.localScale = fscale;
 								rendering[x,y] = tile;
 							}
-						} else
+						}
+                        else
                         {
                             undrawn = true;
                         }

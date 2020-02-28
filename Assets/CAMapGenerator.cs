@@ -60,7 +60,7 @@ public class CAMapGenerator : MonoBehaviour {
         Instantiate(tile, position, Quaternion.identity, transform);
     }
 
-    private Transform GetPrefabFromBinary(string neighbours) {
+    public Transform GetPrefabFromBinary(string neighbours) {
         foreach (Tile t in tiles) {
             if (t.name == neighbours) {
                 if (!t.tilePrefab) Debug.LogWarning("Tile Not found: " + neighbours);
