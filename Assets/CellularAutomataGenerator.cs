@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class CellularAutomataGenerator : MonoBehaviour
 {
     public enum BlendMode {Maximum, Minimum};
@@ -31,6 +32,8 @@ public class CellularAutomataGenerator : MonoBehaviour
     private int currentLayer = 0;
     private string currentSeed = "";
 
+    public PlatformAnalyzer _analyzer = null;
+
     public void Generate() {
         isLayered = false;
         map = new int[width, height];
@@ -45,6 +48,14 @@ public class CellularAutomataGenerator : MonoBehaviour
         for (int i = 0; i < blendLayers; i++) {
             GenerateMap();
         }
+    }
+
+    public void Analyze() {
+        _analyzer.Analyze(GetMap(), width, height);
+    }
+
+    public int[,] GetMap() {
+        return map;
     }
 
     private void GenerateMap() {
