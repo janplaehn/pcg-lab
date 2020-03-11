@@ -10,17 +10,9 @@ public class CAGeneratorEditor : Editor {
         if (GUILayout.Button("Build Map")) {
             script.BuildMap();
         }
-    }
-}
 
-[CustomEditor(typeof(CellularAutomataGenerator))]
-public class CAEditor : Editor {
-    public override void OnInspectorGUI() {
-        DrawDefaultInspector();
-
-        CellularAutomataGenerator script = (CellularAutomataGenerator)target;
-        if (GUILayout.Button("Analyze")) {
-            script.Analyze();
+        if (GUILayout.Button("Build Map + Analyze")) {
+            script.BuildAndAnalyze();
         }
     }
 }

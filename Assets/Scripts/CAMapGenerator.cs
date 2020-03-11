@@ -47,6 +47,11 @@ public class CAMapGenerator : MonoBehaviour {
         }
     }
 
+    public void BuildAndAnalyze() {
+        BuildMap();
+        caGenerator.Analyze();
+    }
+
     private void SetTile(int x, int y) {
         Vector3 position = new Vector3((-width / 2 + x + .5f) * cellWidth, (-height / 2 + y + .5f) * cellHeight, 0);
 
