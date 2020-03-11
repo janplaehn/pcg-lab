@@ -32,8 +32,6 @@ public class CellularAutomataGenerator : MonoBehaviour
     private int currentLayer = 0;
     private string currentSeed = "";
 
-    public PlatformAnalyzer _analyzer = null;
-
     public void Generate() {
         isLayered = false;
         map = new int[width, height];
@@ -51,11 +49,7 @@ public class CellularAutomataGenerator : MonoBehaviour
     }
 
     public void Analyze() {
-        _analyzer.Analyze(GetMap(), width, height);
-    }
-
-    public int[,] GetMap() {
-        return map;
+        new TraversabilityAnalyzer(map, width, height);
     }
 
     private void GenerateMap() {
