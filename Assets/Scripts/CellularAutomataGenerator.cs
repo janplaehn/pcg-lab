@@ -49,7 +49,7 @@ public class CellularAutomataGenerator : MonoBehaviour
     }
 
     public void Analyze() {
-        new TraversabilityAnalyzer(map, width, height);
+        new TraversabilityAnalyzer(map, width, height, TraversabilityAnalyzer.PCGType.CA);
     }
 
     private void GenerateMap() {

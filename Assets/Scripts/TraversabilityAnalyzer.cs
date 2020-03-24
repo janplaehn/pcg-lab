@@ -10,9 +10,17 @@ public class TraversabilityAnalyzer {
     private List<TileData> _groundTiles = new List<TileData>();
     private List<PlatformData> _platforms = new List<PlatformData>();
 
-    public TraversabilityAnalyzer(int[,] map, int width, int height) {
+    public enum PCGType {
+        CA,
+        WFC
+    }
+
+    public static PCGType _type;
+
+    public TraversabilityAnalyzer(int[,] map, int width, int height, PCGType type) {
         _width = width;
         _height = height;
+        _type = type;
         Analyze(map);
     }
 

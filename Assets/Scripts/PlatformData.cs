@@ -6,21 +6,35 @@ using UnityEngine;
 public class PlatformData {
 
     public List<TileData> _tiles;
+    public List<ChunkData> _chunks = new List<ChunkData>();
 
     public PlatformData(List<TileData> tiles) {
         _tiles = new List<TileData>(tiles);
+        if (!HasGroundTile()) return;
         Sort();
         Analyze();
     }
 
     private void Analyze() {
-         //1.Divide into chunks:
-            //a. Get Slope
-            //b. Get Discontinuity
+        //1.Divide into chunks:
+        for (int i = 0; i < _tiles.Count; i++) {
+            List<TileData> chunkTiles = GetChunkTiles(i);
+            _chunks.Add(new ChunkData(chunkTiles));
+        }
+           
 
          //2. Get Roughness
             //a. Stones and Sizes
             //b.Stone Distances
+    }
+
+    private List<TileData> GetChunkTiles(int index) {
+        int start, end, amount;
+        start = index;
+        end = index + (ChunkData.CHUNKWIDTH - 1);
+        end = Mathf.Clamp(end, 0, _tiles.Count - 1);
+        amount = (end - start) +1;
+        return _tiles.GetRange(start, amount);
     }
 
     public bool HasGroundTile() {
