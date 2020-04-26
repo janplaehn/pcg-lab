@@ -1,11 +1,11 @@
-﻿using System.Collections;
+﻿
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class ChunkData {
     public List<TileData> _tiles;
     private float _slopeAngle = 0;
+    private string _angleType = "";
     private int _smallDiscontinuities = 0;
     private int _largeDiscontinuities = 0;
 
@@ -14,22 +14,9 @@ public class ChunkData {
 
     private readonly int MAX_DISCONTINUITY_SMALL = 1;
     public static readonly int CHUNKWIDTH = 5; //Should be an odd number [one in the middle + even amount on each side]
-
-    //Google Form URL
-    private static readonly string CHUNK_FORM_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfihbhg0H--NMTjeRagKCrJlwEEj3taB-PduJnq8TqQQOGwpw/formResponse";
-
-    //The Keys accosiated with eah of the different questions in the form
-    private static readonly string PCG_TYPE_KEY = "entry.332652072";
-    private static readonly string SLOPE_KEY = "entry.1299467495";
-    private static readonly string SMALL_DISCONTINUITY_KEY = "entry.4193981";
-    private static readonly string LARGE_DISCONTINUITY_KEY = "entry.1808954004";
-
-    //The Entries and Options in the Google form
-    private static readonly string CA_ENTRY = "Cellular Automata";
-    private static readonly string WFC_ENTRY = "Wave Function Collapse";
-    private static readonly string FLAT_ENTRY = "Flat (0-30°)";
-    private static readonly string SLOPED_ENTRY = "Sloped (0-60°)";
-    private static readonly string STEEP_ENTRY = "Steep (60°-90°)";
+    private static readonly string FLAT = "Flat (0-30°)";
+    private static readonly string SLOPED = "Sloped (0-60°)";
+    private static readonly string STEEP = "Steep (60°-90°)";
 
     public ChunkData(List<TileData> tiles) {
         _tiles = tiles;
@@ -40,11 +27,22 @@ public class ChunkData {
             return;
         }
         Analyze();
-        SendData();
+        SaveToExcel();
     }
 
     private void Analyze() {
         _slopeAngle = GetSlopeAngle();
+
+        if (_slopeAngle <= 30) {
+            _angleType = FLAT;
+        }
+        else if (_slopeAngle <= 60) {
+            _angleType = SLOPED;
+        }
+        else {
+            _angleType = STEEP;
+        }
+
         foreach (TileData t in _tiles) {
             AddDiscontinuity(t);
         }
@@ -70,34 +68,34 @@ public class ChunkData {
         }
     }
 
-    private void SendData() {
-        GoogleFormsSubmissionService form = new GoogleFormsSubmissionService(CHUNK_FORM_URL);
+    private void SaveToExcel() {
+        int row = ExcelHelper.GetEmptyRow(ExcelHelper.CHUNKSHEET);
+        ExcelHelper.WriteData(ExcelHelper.ANGLE, row, _slopeAngle.ToString());
+        ExcelHelper.WriteData(ExcelHelper.ANGLE_TYPE, row, _angleType);
+        ExcelHelper.WriteData(ExcelHelper.SMALL_DISCONTINUITIES, row, _smallDiscontinuities.ToString());
+        ExcelHelper.WriteData(ExcelHelper.LARGE_DISCONTINUITIES, row, _largeDiscontinuities.ToString());
 
-        //PCG Type
+        ExcelHelper.WriteData(ExcelHelper.CHUNK_PCG_TYPE, row, TraversabilityAnalyzer._type.ToString());
         if (TraversabilityAnalyzer._type == TraversabilityAnalyzer.PCGType.CA) {
-            form.SetCheckboxValues(PCG_TYPE_KEY, CA_ENTRY);
+            CellularAutomataGenerator generator = TraversabilityAnalyzer._caGenerator;
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, row, generator.width +  "x" + TraversabilityAnalyzer._caGenerator.height);
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, row, generator.seed);
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, row, generator.fillAmount.ToString());
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_BIRTHLIMIT, row, generator.birthLimit.ToString());
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_DEATHLIMIT, row, generator.deathLimit.ToString());
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_SMOOTHITERATIONS, row, generator.smoothIterations.ToString());
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_BLENDLAYERS, row, generator.blendLayers.ToString());
         }
-        else if (TraversabilityAnalyzer._type == TraversabilityAnalyzer.PCGType.WFC) {
-            form.SetCheckboxValues(PCG_TYPE_KEY, WFC_ENTRY);
-        }
-        
-        //Angle
-        if (_slopeAngle <= 30) {
-            form.SetCheckboxValues(SLOPE_KEY, FLAT_ENTRY);
-        }
-        else if (_slopeAngle <= 60) {
-            form.SetCheckboxValues(SLOPE_KEY, SLOPED_ENTRY);
-        }
-       else {
-            form.SetCheckboxValues(SLOPE_KEY, STEEP_ENTRY);
+        else {
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_BIRTHLIMIT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_DEATHLIMIT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_SMOOTHITERATIONS, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_BLENDLAYERS, row, "—");
         }
 
-        //Discontinuities
-        form.SetCheckboxValues(SMALL_DISCONTINUITY_KEY, _smallDiscontinuities.ToString());
-        form.SetCheckboxValues(LARGE_DISCONTINUITY_KEY, _largeDiscontinuities.ToString());
-
-
-        form.Submit();
     }
 
 }

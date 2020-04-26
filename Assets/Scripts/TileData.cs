@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class TileData {
@@ -12,6 +10,10 @@ public class TileData {
         _xPos = x;
         _yPos = y;
         _isWallTile = isWallTile;
+    }
+
+    public Vector2 GetPosition() {
+        return new Vector2(_xPos, _yPos);
     }
 
     public bool IsValidNeighbour(TileData otherTile, List<TileData> existingNeighbours) {

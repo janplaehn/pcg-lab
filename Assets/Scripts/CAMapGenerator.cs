@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using UnityEditor;
 
 public class CAMapGenerator : MonoBehaviour {
 
@@ -55,14 +56,18 @@ public class CAMapGenerator : MonoBehaviour {
     private void SetTile(int x, int y) {
         Vector3 position = new Vector3((-width / 2 + x + .5f) * cellWidth, (-height / 2 + y + .5f) * cellHeight, 0);
 
-        Instantiate(backgroundTile, position, Quaternion.identity, transform);
+        Transform newBgTile = PrefabUtility.InstantiatePrefab(backgroundTile, transform) as Transform;
+        newBgTile.position = position;
+        newBgTile.rotation = Quaternion.identity;
         if (caGenerator.GetTile(x, y) == 0) {
             return;
         }
 
         string neighbours = caGenerator.GetNeighboursAsBinary(x, y);
         Transform tile = GetPrefabFromBinary(neighbours);
-        Instantiate(tile, position, Quaternion.identity, transform);
+        Transform newTile = PrefabUtility.InstantiatePrefab(tile, transform) as Transform;
+        newTile.position = position;
+        newTile.rotation = Quaternion.identity;
     }
 
     public Transform GetPrefabFromBinary(string neighbours) {

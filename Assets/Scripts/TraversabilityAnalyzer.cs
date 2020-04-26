@@ -10,6 +10,8 @@ public class TraversabilityAnalyzer {
     private List<TileData> _groundTiles = new List<TileData>();
     private List<PlatformData> _platforms = new List<PlatformData>();
 
+    public static CellularAutomataGenerator _caGenerator = null;
+
     public enum PCGType {
         CA,
         WFC
@@ -17,16 +19,20 @@ public class TraversabilityAnalyzer {
 
     public static PCGType _type;
 
-    public TraversabilityAnalyzer(int[,] map, int width, int height, PCGType type) {
+    public TraversabilityAnalyzer(int[,] map, int width, int height, CellularAutomataGenerator generator) { //Todo: Add Constructor for WFC
         _width = width;
         _height = height;
-        _type = type;
+        _type = PCGType.CA;
+        _caGenerator = generator;
         Analyze(map);
     }
 
-    public void Analyze(int[,] map) {
+    private void Analyze(int[,] map) {
+        ExcelHelper.Init();
         FindGroundTiles(map);
         DivideIntoPlatforms();
+        ExcelHelper.Save();
+        ExcelHelper.StartExcel();
     }
 
     public void FindGroundTiles(int[,] map) {
