@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PlatformData {
@@ -34,7 +32,7 @@ public class PlatformData {
         start = index;
         end = index + (ChunkData.CHUNKWIDTH - 1);
         end = Mathf.Clamp(end, 0, _tiles.Count - 1);
-        amount = (end - start) +1;
+        amount = (end - start) + 1;
         return _tiles.GetRange(start, amount);
     }
 
@@ -229,7 +227,7 @@ public class PlatformData {
         }
         ExcelHelper.WriteData(ExcelHelper.ROCKDENSITY, row, GetRockDensity().ToString());
 
-
+        ExcelHelper.WriteData(ExcelHelper.PLATFORM_PCG_TYPE, row, TraversabilityAnalyzer._type.ToString());
 
         if (TraversabilityAnalyzer._type == TraversabilityAnalyzer.PCGType.CA) {
             CellularAutomataGenerator generator = TraversabilityAnalyzer._caGenerator;

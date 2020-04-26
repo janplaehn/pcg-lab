@@ -86,7 +86,18 @@ public class ChunkData {
             ExcelHelper.WriteData(ExcelHelper.CHUNK_SMOOTHITERATIONS, row, generator.smoothIterations.ToString());
             ExcelHelper.WriteData(ExcelHelper.CHUNK_BLENDLAYERS, row, generator.blendLayers.ToString());
         }
-        else {
+        else if (TraversabilityAnalyzer._type == TraversabilityAnalyzer.PCGType.WFC) {
+            OverlapWFC generator = TraversabilityAnalyzer._wfcGenerator;
+
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, row, generator.width + "x" + generator.depth);
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, row, generator.seed.ToString());
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_BIRTHLIMIT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_DEATHLIMIT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_SMOOTHITERATIONS, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_BLENDLAYERS, row, "—");
+        }
+        else {            
             ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, row, "—");
             ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, row, "—");
             ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, row, "—");

@@ -17,7 +17,7 @@ public static class ExcelHelper {
         }
     }
 
-    public static readonly string MAPSHEET = "Chunks";
+    public static readonly string MAPSHEET = "Maps";
     public static readonly string PLATFORMSHEET = "Platforms";
     public static readonly string CHUNKSHEET = "Chunks";
 
@@ -35,7 +35,8 @@ public static class ExcelHelper {
     #endregion
 
     #region Excel Map Data
-
+    public static readonly DataColumn PLATFORMCOUNT = new DataColumn(MAPSHEET, "A");
+    public static readonly DataColumn ROOMCOUNT = new DataColumn(MAPSHEET, "B");
     #endregion
 
     #region  Excel CA Data
@@ -48,14 +49,23 @@ public static class ExcelHelper {
     public static readonly DataColumn CHUNK_SMOOTHITERATIONS = new DataColumn(CHUNKSHEET, "L");
     public static readonly DataColumn CHUNK_BLENDLAYERS = new DataColumn(CHUNKSHEET, "M");
 
-    public static readonly DataColumn PLATFORM_PCG_TYPE = new DataColumn(PLATFORMSHEET, "F");
-    public static readonly DataColumn PLATFORM_DIMENSIONS = new DataColumn(PLATFORMSHEET, "G");
-    public static readonly DataColumn PLATFORM_SEED = new DataColumn(PLATFORMSHEET, "H");
-    public static readonly DataColumn PLATFORM_FILLAMOUNT = new DataColumn(PLATFORMSHEET, "I");
-    public static readonly DataColumn PLATFORM_BIRTHLIMIT = new DataColumn(PLATFORMSHEET, "J");
-    public static readonly DataColumn PLATFORM_DEATHLIMIT = new DataColumn(PLATFORMSHEET, "K");
-    public static readonly DataColumn PLATFORM_SMOOTHITERATIONS = new DataColumn(PLATFORMSHEET, "L");
-    public static readonly DataColumn PLATFORM_BLENDLAYERS = new DataColumn(PLATFORMSHEET, "M");
+    public static readonly DataColumn PLATFORM_PCG_TYPE = new DataColumn(PLATFORMSHEET, "E");
+    public static readonly DataColumn PLATFORM_DIMENSIONS = new DataColumn(PLATFORMSHEET, "F");
+    public static readonly DataColumn PLATFORM_SEED = new DataColumn(PLATFORMSHEET, "G");
+    public static readonly DataColumn PLATFORM_FILLAMOUNT = new DataColumn(PLATFORMSHEET, "H");
+    public static readonly DataColumn PLATFORM_BIRTHLIMIT = new DataColumn(PLATFORMSHEET, "I");
+    public static readonly DataColumn PLATFORM_DEATHLIMIT = new DataColumn(PLATFORMSHEET, "J");
+    public static readonly DataColumn PLATFORM_SMOOTHITERATIONS = new DataColumn(PLATFORMSHEET, "K");
+    public static readonly DataColumn PLATFORM_BLENDLAYERS = new DataColumn(PLATFORMSHEET, "L");
+
+    public static readonly DataColumn MAP_PCG_TYPE = new DataColumn(MAPSHEET, "D");
+    public static readonly DataColumn MAP_DIMENSIONS = new DataColumn(MAPSHEET, "E");
+    public static readonly DataColumn MAP_SEED = new DataColumn(MAPSHEET, "F");
+    public static readonly DataColumn MAP_FILLAMOUNT = new DataColumn(MAPSHEET, "G");
+    public static readonly DataColumn MAP_BIRTHLIMIT = new DataColumn(MAPSHEET, "H");
+    public static readonly DataColumn MAP_DEATHLIMIT = new DataColumn(MAPSHEET, "I");
+    public static readonly DataColumn MAP_SMOOTHITERATIONS = new DataColumn(MAPSHEET, "J");
+    public static readonly DataColumn MAP_BLENDLAYERS = new DataColumn(MAPSHEET, "K");
     #endregion
 
     public static void Init() {

@@ -6,7 +6,7 @@ using UnityEditor;
 #endif
 
 [ExecuteInEditMode]
-class OverlapWFC : MonoBehaviour{
+public class OverlapWFC : MonoBehaviour{
     public bool generateOnStart = false;
 	public Training training = null;
 	public int gridsize = 1;
@@ -31,6 +31,7 @@ class OverlapWFC : MonoBehaviour{
 
     public Transform wallTile = null;
     public Transform backgroundTile = null;
+    private bool needsToAnalyze = false;
 
     public static bool IsPrefabRef(UnityEngine.Object o){
 		#if UNITY_EDITOR
@@ -144,6 +145,7 @@ class OverlapWFC : MonoBehaviour{
 		if (output == null){return;}
 		if (group == null){return;}
         undrawn = false;
+        tiles = new int[width, depth];
 		try{
 			for (int y = 0; y < depth; y++){
 				for (int x = 0; x < width; x++){
@@ -155,19 +157,30 @@ class OverlapWFC : MonoBehaviour{
 							GameObject fab = training.tiles[v] as GameObject;
                             if (x == 0 || x == width - 2 || y == 0 || y == depth - 2) {
                                 fab = wallTile.gameObject;
+                                tiles[x, y] = 1;
                             }
                             if (GetDistanceToCenter(x,y) < centerCircleRadius) {
                                 fab = backgroundTile.gameObject;
+                                tiles[x, y] = 0;
                             }
-                                if (fab != null){
-								GameObject tile = (GameObject)Instantiate(fab, new Vector3() , Quaternion.identity);
-								Vector3 fscale = tile.transform.localScale;
-								tile.transform.parent = group;
-								tile.transform.localPosition = pos;
-								tile.transform.localEulerAngles = new Vector3(0, 0, 360 - (rot * 90));
-								tile.transform.localScale = fscale;
-								rendering[x,y] = tile;
+                            if (fab != null){
+							 GameObject tile = (GameObject)Instantiate(fab, new Vector3() , Quaternion.identity);
+                                if (tile.GetComponent<Collider2D>() || tile.GetComponentInChildren<Collider2D>()) {
+                                    tiles[x, y] = 1;
+                                }
+                                else {
+                                    tiles[x, y] = 0;
+                                }
+							 Vector3 fscale = tile.transform.localScale;
+							 tile.transform.parent = group;
+							 tile.transform.localPosition = pos;
+							 tile.transform.localEulerAngles = new Vector3(0, 0, 360 - (rot * 90));
+							 tile.transform.localScale = fscale;
+							 rendering[x,y] = tile;
 							}
+                            else {
+                                tiles[x, y] = 0;
+                            }
 						}
                         else
                         {
@@ -176,11 +189,20 @@ class OverlapWFC : MonoBehaviour{
 					}
 				}
 	  		}
+            if (needsToAnalyze) {
+                needsToAnalyze = false;
+                new TraversabilityAnalyzer(tiles, width, depth, this);
+            }
 	  	} catch (IndexOutOfRangeException) {
 	  		model = null;
 	  		return;
 	  	}
 	}
+
+    public void GenerateAndAnalyze() {
+        Generate();
+        needsToAnalyze = true;
+    }
 }
 
  #if UNITY_EDITOR
@@ -189,10 +211,13 @@ public class WFCGeneratorEditor : Editor {
 	public override void OnInspectorGUI () {
 		OverlapWFC generator = (OverlapWFC)target;
 		if (generator.training != null){
-			if(GUILayout.Button("generate")){
+			if(GUILayout.Button("Generate")){
 				generator.Generate();
 			}
-			if (generator.model != null){
+            if (GUILayout.Button("Generate and Analyze")) {
+                generator.GenerateAndAnalyze();
+            }
+            if (generator.model != null){
 				if(GUILayout.Button("RUN")){
 					generator.Run();
 				}
