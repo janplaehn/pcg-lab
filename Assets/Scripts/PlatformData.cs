@@ -26,7 +26,7 @@ public class PlatformData {
             _chunks.Add(new ChunkData(chunkTiles));
         }
         CalculateRoughness();
-        //Todo: Save to Excel
+        SaveToExcel();
     }
 
     private List<TileData> GetChunkTiles(int index) {
@@ -111,8 +111,13 @@ public class PlatformData {
         TileData endTile = _tiles[_tiles.Count - 1];
         _platformSlope = SlopeBetweenTiles(startTile, endTile);
         for (int i = 0; i < _tiles.Count - 1; i++) {
+            float distance = 0;
             TileData first = _tiles[i];
             TileData second = _tiles[i+1];
+            if (first != startTile) {
+                TileData previous = _tiles[i - 1];
+                distance = (first.GetPosition() - previous.GetPosition()).magnitude;
+            }
             float tileSlope = SlopeBetweenTiles(first, second);
             if (tileSlope > _platformSlope && offset != AngleOffset.POSITIVE) {
                 offset = AngleOffset.POSITIVE;
@@ -126,35 +131,43 @@ public class PlatformData {
             }
             else if (tileSlope < _platformSlope) {
                 offset = AngleOffset.NEGATIVE;
-                ExpandRock();
+                ExpandRock(distance);
             }
             else {
-                ExpandRock();
+                ExpandRock(distance);
+            }
+            if (_currentRockWidth == UNASSIGNED) {
+                ExpandDistance(distance);
             }
         }
     }
 
     private void SaveRock() {
-        if (_currentRockWidth != UNASSIGNED) _rockWidths.Add(_currentRockWidth);
-        if (_currentRockDistance != UNASSIGNED) _rockDistances.Add(_currentRockDistance);
-        _currentRockWidth = UNASSIGNED;
-        _currentRockDistance = UNASSIGNED;
+        if (_currentRockWidth != UNASSIGNED) {
+            _rockWidths.Add(_currentRockWidth);
+            _currentRockDistance = 0;
+        }
+        else {
+            _currentRockDistance = UNASSIGNED;
+        }
+        _currentRockWidth = UNASSIGNED;       
     }
 
     private void InitRock() {
-        _currentRockWidth = 1;
-        //Don't keep track of distance if there is no other rock
-        if (_rockWidths.Count > 0) {
-            _currentRockDistance = 0;
-        }
+        if (_currentRockDistance != UNASSIGNED) _rockDistances.Add(_currentRockDistance);
+        _currentRockWidth = 0;
+        _currentRockDistance = UNASSIGNED;
     }
 
-    private void ExpandRock() {
+    private void ExpandRock(float distance) {
         if (_currentRockWidth != UNASSIGNED) {
-            _currentRockWidth++;
-        }        
+            _currentRockWidth += distance;
+        }                
+    }
+
+    private void ExpandDistance(float distance) {
         if (_currentRockDistance != UNASSIGNED) {
-            _currentRockDistance++;
+            _currentRockDistance += distance;
         }
     }
 
@@ -171,11 +184,53 @@ public class PlatformData {
         return angle;
     }
 
+    private float GetAverageRockWidth() {
+        if (_rockWidths.Count == 0) {
+            return -1;
+        }
+        float average = 0;
+        foreach (float width in _rockWidths) {
+            average += width;
+        }
+        return average / _rockWidths.Count;
+    }
+
+    private float GetAverageRockDistance() {
+        if (_rockDistances.Count == 0) {
+            return -1;
+        }
+        float average = 0;
+        foreach (float distance in _rockDistances) {
+            average += distance;
+        }
+        return average / _rockDistances.Count;
+    }
+
+    private float GetRockDensity() {
+        if (_rockWidths.Count == 0) return 0;
+        return (float)_rockWidths.Count / (float)_tiles.Count;
+    }
+
     private void SaveToExcel() {
         int row = ExcelHelper.GetEmptyRow(ExcelHelper.PLATFORMSHEET);
 
-        //Todo: Fill Excel with Platform Data
-        
+        if (_rockWidths.Count > 0) {
+            ExcelHelper.WriteData(ExcelHelper.ROCKSIZE, row, GetAverageRockWidth().ToString());
+        }
+        else {
+            ExcelHelper.WriteData(ExcelHelper.ROCKSIZE, row, "—");
+        }
+
+        if (_rockDistances.Count > 0) {
+            ExcelHelper.WriteData(ExcelHelper.ROCKDISTANCE, row, GetAverageRockDistance().ToString());
+        }
+        else {
+            ExcelHelper.WriteData(ExcelHelper.ROCKDISTANCE, row, "—");
+        }
+        ExcelHelper.WriteData(ExcelHelper.ROCKDENSITY, row, GetRockDensity().ToString());
+
+
+
         if (TraversabilityAnalyzer._type == TraversabilityAnalyzer.PCGType.CA) {
             CellularAutomataGenerator generator = TraversabilityAnalyzer._caGenerator;
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_DIMENSIONS, row, generator.width + "x" + TraversabilityAnalyzer._caGenerator.height);

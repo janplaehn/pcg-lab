@@ -29,7 +29,9 @@ public static class ExcelHelper {
     #endregion
 
     #region Excel Platform Data
-
+    public static readonly DataColumn ROCKSIZE = new DataColumn(PLATFORMSHEET, "A");
+    public static readonly DataColumn ROCKDISTANCE = new DataColumn(PLATFORMSHEET, "B");
+    public static readonly DataColumn ROCKDENSITY = new DataColumn(PLATFORMSHEET, "C");
     #endregion
 
     #region Excel Map Data
@@ -81,12 +83,19 @@ public static class ExcelHelper {
     public static int GetEmptyRow(string sheetIndex) {
         ExcelWorksheet sheet = xls.Workbook.Worksheets[sheetIndex];
         int row = 0;
+        int stepper = 100;
         while (true) {
             string address = "A" + row;
             if (sheet.Cells[address].Value == null) {
-                return row;
+                if (stepper != 1) {
+                    row -= stepper;
+                    stepper /= 10;
+                }
+                else {
+                    return row;
+                }
             }
-            row++;
+            row += stepper;
         }
     }
 
