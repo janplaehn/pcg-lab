@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using OfficeOpenXml;
 using System.IO;
+using UnityEditor;
 
 public static class ExcelHelper {
 
@@ -68,9 +69,16 @@ public static class ExcelHelper {
     public static readonly DataColumn MAP_BLENDLAYERS = new DataColumn(MAPSHEET, "K");
     #endregion
 
-    public static void Init() {
-        FileInfo fileInfo = new FileInfo(Application.dataPath + "/results.xlsx");
-        xls = new ExcelPackage(fileInfo);
+    public static bool Init() {
+        try {
+            FileInfo fileInfo = new FileInfo(Directory.GetCurrentDirectory() + "/results.xlsx");
+            xls = new ExcelPackage(fileInfo);
+            return true;
+        }
+        catch {
+            EditorUtility.DisplayDialog("Excel running", "Close the Excel Spreadsheet before running this script", "Ok");
+            return false;
+        }
     }
 
     public static void WriteData(DataColumn column, string data) {
@@ -121,6 +129,6 @@ public static class ExcelHelper {
     }
 
     public static void StartExcel() {
-        System.Diagnostics.Process.Start(Application.dataPath + "/results.xlsx");
+        System.Diagnostics.Process.Start(Directory.GetCurrentDirectory() + "/results.xlsx");
     }
 }

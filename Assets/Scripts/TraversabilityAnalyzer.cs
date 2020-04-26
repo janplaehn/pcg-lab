@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEditor;
 
 public class TraversabilityAnalyzer {
     private int _width, _height = 0;
@@ -18,6 +19,7 @@ public class TraversabilityAnalyzer {
     public enum PCGType {
         CA,
         WFC,
+        MARIO_1_1,
         OTHER
     }
 
@@ -39,21 +41,29 @@ public class TraversabilityAnalyzer {
         Analyze(map);
     }
 
-    public TraversabilityAnalyzer(int[,] map, int width, int height) {
+    public TraversabilityAnalyzer(int[,] map, int width, int height, PCGType type) {
         _width = width;
         _height = height;
-        _type = PCGType.OTHER;
+        _type = type;
         Analyze(map);
     }
 
     private void Analyze(int[,] map) {
-        ExcelHelper.Init();
+        if (!ExcelHelper.Init()) {
+            return;
+        }
+        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Calculating Room Count", 0.2f);
         GetRoomCount(map);
+        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Finding Ground Tiles", 0.4f);
         FindGroundTiles(map);
+        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Dividing Platforms", 0.6f);
         DivideIntoPlatforms();
+        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Saving To Excel", 0.8f);
         MapDataToExcel();
+        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Done!", 1f);
         ExcelHelper.Save();
         ExcelHelper.StartExcel();
+        EditorUtility.ClearProgressBar();
     }
 
     public void FindGroundTiles(int[,] map) {

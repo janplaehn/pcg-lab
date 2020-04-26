@@ -49,8 +49,8 @@ public class ChunkData {
     }
 
     private float GetSlopeAngle() {
-        float yDifference = Mathf.Abs(_first._yPos - _last._yPos);
-        float xDifference = Mathf.Abs(_first._xPos - _last._xPos);
+        float yDifference = Mathf.Abs(_last._yPos - _first._yPos);
+        float xDifference = Mathf.Abs(_last._xPos - _first._xPos);
         Vector2 slope = new Vector2(xDifference, yDifference);        
         return Vector2.Angle(Vector2.right, slope);
     }

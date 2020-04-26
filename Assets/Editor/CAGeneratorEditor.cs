@@ -16,3 +16,16 @@ public class CAGeneratorEditor : Editor {
         }
     }
 }
+
+[CustomEditor(typeof(MarioOneOne))]
+public class MarioOneOneEditor : Editor {
+    public override void OnInspectorGUI() {
+        DrawDefaultInspector();
+
+        MarioOneOne script = (MarioOneOne)target;
+
+        if (GUILayout.Button("Analyze")) {
+            script.Analyze();
+        }
+    }
+}
