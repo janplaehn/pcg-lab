@@ -23,21 +23,25 @@ public static class ExcelHelper {
     public static readonly string CHUNKSHEET = "Chunks";
 
     #region Excel Chunk Data
-    public static readonly DataColumn ANGLE = new DataColumn(CHUNKSHEET, "A");
-    public static readonly DataColumn ANGLE_TYPE = new DataColumn(CHUNKSHEET, "B");
-    public static readonly DataColumn SMALL_DISCONTINUITIES = new DataColumn(CHUNKSHEET, "C");
-    public static readonly DataColumn LARGE_DISCONTINUITIES = new DataColumn(CHUNKSHEET, "D");
+    public static readonly DataColumn CHUNK_TEST_NUMBER = new DataColumn(CHUNKSHEET, "A");
+    public static readonly DataColumn ANGLE = new DataColumn(CHUNKSHEET, "B");
+    public static readonly DataColumn ANGLE_TYPE = new DataColumn(CHUNKSHEET, "C");
+    public static readonly DataColumn SMALL_DISCONTINUITIES = new DataColumn(CHUNKSHEET, "D");
+    public static readonly DataColumn LARGE_DISCONTINUITIES = new DataColumn(CHUNKSHEET, "E");
     #endregion
 
     #region Excel Platform Data
-    public static readonly DataColumn ROCKSIZE = new DataColumn(PLATFORMSHEET, "A");
-    public static readonly DataColumn ROCKDISTANCE = new DataColumn(PLATFORMSHEET, "B");
-    public static readonly DataColumn ROCKDENSITY = new DataColumn(PLATFORMSHEET, "C");
+    public static readonly DataColumn PLATFORM_TEST_NUMBER = new DataColumn(PLATFORMSHEET, "A");
+    public static readonly DataColumn PLATFORM_TILECOUNT = new DataColumn(PLATFORMSHEET, "B");
+    public static readonly DataColumn ROCKSIZE = new DataColumn(PLATFORMSHEET, "C");
+    public static readonly DataColumn ROCKDISTANCE = new DataColumn(PLATFORMSHEET, "D");
+    public static readonly DataColumn ROCKDENSITY = new DataColumn(PLATFORMSHEET, "E");
     #endregion
 
     #region Excel Map Data
-    public static readonly DataColumn PLATFORMCOUNT = new DataColumn(MAPSHEET, "A");
-    public static readonly DataColumn ROOMCOUNT = new DataColumn(MAPSHEET, "B");
+    public static readonly DataColumn MAP_TEST_NUMBER = new DataColumn(MAPSHEET, "A");
+    public static readonly DataColumn PLATFORMCOUNT = new DataColumn(MAPSHEET, "B");
+    public static readonly DataColumn ROOMCOUNT = new DataColumn(MAPSHEET, "C");
     #endregion
 
     #region  Excel CA Data
@@ -50,14 +54,14 @@ public static class ExcelHelper {
     public static readonly DataColumn CHUNK_SMOOTHITERATIONS = new DataColumn(CHUNKSHEET, "L");
     public static readonly DataColumn CHUNK_BLENDLAYERS = new DataColumn(CHUNKSHEET, "M");
 
-    public static readonly DataColumn PLATFORM_PCG_TYPE = new DataColumn(PLATFORMSHEET, "E");
-    public static readonly DataColumn PLATFORM_DIMENSIONS = new DataColumn(PLATFORMSHEET, "F");
-    public static readonly DataColumn PLATFORM_SEED = new DataColumn(PLATFORMSHEET, "G");
-    public static readonly DataColumn PLATFORM_FILLAMOUNT = new DataColumn(PLATFORMSHEET, "H");
-    public static readonly DataColumn PLATFORM_BIRTHLIMIT = new DataColumn(PLATFORMSHEET, "I");
-    public static readonly DataColumn PLATFORM_DEATHLIMIT = new DataColumn(PLATFORMSHEET, "J");
-    public static readonly DataColumn PLATFORM_SMOOTHITERATIONS = new DataColumn(PLATFORMSHEET, "K");
-    public static readonly DataColumn PLATFORM_BLENDLAYERS = new DataColumn(PLATFORMSHEET, "L");
+    public static readonly DataColumn PLATFORM_PCG_TYPE = new DataColumn(PLATFORMSHEET, "F");
+    public static readonly DataColumn PLATFORM_DIMENSIONS = new DataColumn(PLATFORMSHEET, "G");
+    public static readonly DataColumn PLATFORM_SEED = new DataColumn(PLATFORMSHEET, "H");
+    public static readonly DataColumn PLATFORM_FILLAMOUNT = new DataColumn(PLATFORMSHEET, "I");
+    public static readonly DataColumn PLATFORM_BIRTHLIMIT = new DataColumn(PLATFORMSHEET, "J");
+    public static readonly DataColumn PLATFORM_DEATHLIMIT = new DataColumn(PLATFORMSHEET, "K");
+    public static readonly DataColumn PLATFORM_SMOOTHITERATIONS = new DataColumn(PLATFORMSHEET, "L");
+    public static readonly DataColumn PLATFORM_BLENDLAYERS = new DataColumn(PLATFORMSHEET, "M");
 
     public static readonly DataColumn MAP_PCG_TYPE = new DataColumn(MAPSHEET, "D");
     public static readonly DataColumn MAP_DIMENSIONS = new DataColumn(MAPSHEET, "E");
@@ -89,13 +93,34 @@ public static class ExcelHelper {
     public static int GetEmptyRow(DataColumn column) {
         ExcelWorksheet sheet = xls.Workbook.Worksheets[column._sheet];
         int row = 0;
+        int stepper = 100;
         while (true) {
             string address = column._col + row;
-            if ((string)sheet.Cells[address].Value != "") {
-                return row;
+            if (sheet.Cells[address].Value == null) {
+                if (stepper != 1) {
+                    row -= stepper;
+                    stepper /= 10;
+                }
+                else {
+                    return row;
+                }
             }
-            row++;
+            row += stepper;
         }
+    }
+
+    public static int GetTestNumber() {
+        int emptyRow = GetEmptyRow(MAP_TEST_NUMBER);
+        int row = emptyRow - 1;
+        ExcelWorksheet sheet = xls.Workbook.Worksheets[MAP_TEST_NUMBER._sheet];
+
+        string address = MAP_TEST_NUMBER._col + row;
+        if (sheet.Cells[address].Value == null) return 1;
+        string value = sheet.Cells[address].GetValue<string>();
+        if (int.TryParse(value, out int result)) {
+            return result + 1;
+        }
+        return 1;
     }
 
     public static int GetEmptyRow(string sheetIndex) {

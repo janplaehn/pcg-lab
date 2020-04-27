@@ -70,15 +70,18 @@ public class ChunkData {
 
     private void SaveToExcel() {
         int row = ExcelHelper.GetEmptyRow(ExcelHelper.CHUNKSHEET);
+
+        ExcelHelper.WriteData(ExcelHelper.CHUNK_TEST_NUMBER, row, TraversabilityAnalyzer._testNumber.ToString());
         ExcelHelper.WriteData(ExcelHelper.ANGLE, row, _slopeAngle.ToString());
         ExcelHelper.WriteData(ExcelHelper.ANGLE_TYPE, row, _angleType);
         ExcelHelper.WriteData(ExcelHelper.SMALL_DISCONTINUITIES, row, _smallDiscontinuities.ToString());
         ExcelHelper.WriteData(ExcelHelper.LARGE_DISCONTINUITIES, row, _largeDiscontinuities.ToString());
 
         ExcelHelper.WriteData(ExcelHelper.CHUNK_PCG_TYPE, row, TraversabilityAnalyzer._type.ToString());
+        ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, row, TraversabilityAnalyzer._width + "x" + TraversabilityAnalyzer._height);
+
         if (TraversabilityAnalyzer._type == TraversabilityAnalyzer.PCGType.CA) {
             CellularAutomataGenerator generator = TraversabilityAnalyzer._caGenerator;
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, row, generator.width +  "x" + TraversabilityAnalyzer._caGenerator.height);
             ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, row, generator.seed);
             ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, row, generator.fillAmount.ToString());
             ExcelHelper.WriteData(ExcelHelper.CHUNK_BIRTHLIMIT, row, generator.birthLimit.ToString());
@@ -98,7 +101,6 @@ public class ChunkData {
             ExcelHelper.WriteData(ExcelHelper.CHUNK_BLENDLAYERS, row, "—");
         }
         else {            
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, row, "—");
             ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, row, "—");
             ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, row, "—");
             ExcelHelper.WriteData(ExcelHelper.CHUNK_BIRTHLIMIT, row, "—");

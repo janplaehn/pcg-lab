@@ -5,13 +5,14 @@ using UnityEngine;
 using System.Linq;
 using UnityEditor;
 
-public class TraversabilityAnalyzer {
-    private int _width, _height = 0;
+public static class TraversabilityAnalyzer {
+    public static int _width, _height = 0;
 
-    private List<TileData> _groundTiles = new List<TileData>();
-    private List<PlatformData> _platforms = new List<PlatformData>();
+    private static List<TileData> _groundTiles = new List<TileData>();
+    private static List<PlatformData> _platforms = new List<PlatformData>();
 
-    private int _roomCount = 0;
+    private static int _roomCount = 0;
+    public static int _testNumber = 0;
 
     public static CellularAutomataGenerator _caGenerator = null;
     public static OverlapWFC _wfcGenerator = null;
@@ -25,7 +26,7 @@ public class TraversabilityAnalyzer {
 
     public static PCGType _type;
 
-    public TraversabilityAnalyzer(int[,] map, int width, int height, CellularAutomataGenerator generator) {
+    public static void Analyze(int[,] map, int width, int height, CellularAutomataGenerator generator) {
         _width = width;
         _height = height;
         _type = PCGType.CA;
@@ -33,7 +34,7 @@ public class TraversabilityAnalyzer {
         Analyze(map);
     }
 
-    public TraversabilityAnalyzer(int[,] map, int width, int height, OverlapWFC generator) {
+    public static void Analyze(int[,] map, int width, int height, OverlapWFC generator) {
         _width = width;
         _height = height;
         _wfcGenerator = generator;
@@ -41,17 +42,18 @@ public class TraversabilityAnalyzer {
         Analyze(map);
     }
 
-    public TraversabilityAnalyzer(int[,] map, int width, int height, PCGType type) {
+    public static void Analyze(int[,] map, int width, int height, PCGType type) {
         _width = width;
         _height = height;
         _type = type;
         Analyze(map);
     }
 
-    private void Analyze(int[,] map) {
+    private static void Analyze(int[,] map) {
         if (!ExcelHelper.Init()) {
             return;
         }
+        _testNumber = ExcelHelper.GetTestNumber();
         EditorUtility.DisplayProgressBar("Analyzing Traversability", "Calculating Room Count", 0.2f);
         GetRoomCount(map);
         EditorUtility.DisplayProgressBar("Analyzing Traversability", "Finding Ground Tiles", 0.4f);
@@ -66,7 +68,7 @@ public class TraversabilityAnalyzer {
         EditorUtility.ClearProgressBar();
     }
 
-    public void FindGroundTiles(int[,] map) {
+    public static void FindGroundTiles(int[,] map) {
         _groundTiles.Clear();
         for (int y = _height - 1; y >= 0; y--) {
             for (int x = 0; x < _width; x++) {
@@ -75,7 +77,7 @@ public class TraversabilityAnalyzer {
         }
     }
 
-    public void AddTile(int x, int y, int[,] map) {
+    public static void AddTile(int x, int y, int[,] map) {
         if (map[x, y] == 0) return;
         if (IsFloorTile(x, y, map)) {
             TileData floorTile = new TileData(x, y, false);
@@ -87,7 +89,7 @@ public class TraversabilityAnalyzer {
         }
     }
 
-    private void DivideIntoPlatforms() {
+    private static void DivideIntoPlatforms() {
         _platforms.Clear();
         while (_groundTiles.Count > 0) {
             List<TileData> platformTiles = new List<TileData>();
@@ -102,7 +104,7 @@ public class TraversabilityAnalyzer {
         }
     }
 
-    private void GetNeighbourTiles(TileData tile, List<TileData> existingNeighbours) {
+    private static void GetNeighbourTiles(TileData tile, List<TileData> existingNeighbours) {
         foreach (TileData groundTile in _groundTiles) {
             if (tile.IsValidNeighbour(groundTile, existingNeighbours)) {
                 existingNeighbours.Add(groundTile);
@@ -112,9 +114,10 @@ public class TraversabilityAnalyzer {
     }
 
 
-    List<Vector2Int> _roomTiles = new List<Vector2Int>();
-    private void GetRoomCount(int [,] map) {
+    private static List<Vector2Int> _roomTiles = new List<Vector2Int>();
+    private static void GetRoomCount(int [,] map) {
         _roomTiles.Clear();
+        _roomCount = 0;
         for (int y = _height - 1; y >= 0; y--) {
             for (int x = 0; x < _width; x++) {
                 if (map[x, y] == 0) {
@@ -128,7 +131,7 @@ public class TraversabilityAnalyzer {
         }
     }
 
-    private void AssignToRoomRecursive(Vector2Int tile) {
+    private static void AssignToRoomRecursive(Vector2Int tile) {
         _roomTiles.Remove(tile);
         List<Vector2Int> neighbours = GetNeighbourTiles(tile);
         foreach (Vector2Int neighbour in neighbours) {
@@ -136,7 +139,7 @@ public class TraversabilityAnalyzer {
         }
     }
 
-    private List<Vector2Int> GetNeighbourTiles(Vector2Int tile) {
+    private static List<Vector2Int> GetNeighbourTiles(Vector2Int tile) {
         List<Vector2Int> neighbours = new List<Vector2Int>();
         foreach (Vector2Int roomTile in _roomTiles) {
             if (AreValidNeighbours(tile, roomTile)) {
@@ -146,34 +149,35 @@ public class TraversabilityAnalyzer {
         return neighbours;
     }
 
-    public bool AreValidNeighbours(Vector2Int first, Vector2Int second) {
+    public static bool AreValidNeighbours(Vector2Int first, Vector2Int second) {
         int xDist = Mathf.Abs(first.x - second.x);
         int yDist = Mathf.Abs(first.y - second.y);
         if (xDist +  yDist > 1) return false;
         return true;
     }
 
-    private bool IsFloorTile(int x, int y, int[,] map) {
+    private static bool IsFloorTile(int x, int y, int[,] map) {
         if (y < _height - 1 && map[x,y+1] == 0) return true;
         return false;
     }
-    private bool IsWallTile(int x, int y, int[,] map) {
+    private static bool IsWallTile(int x, int y, int[,] map) {
         if (x < _width - 1 && map[x + 1, y] == 0) return true;
         if (x > 0 && map[x - 1, y] == 0) return true;
         return false;
     }
 
-    private void MapDataToExcel() {
+    private static void MapDataToExcel() {
         int row = ExcelHelper.GetEmptyRow(ExcelHelper.MAPSHEET);
 
+        ExcelHelper.WriteData(ExcelHelper.MAP_TEST_NUMBER, row, _testNumber.ToString());
         ExcelHelper.WriteData(ExcelHelper.PLATFORMCOUNT, row, _platforms.Count.ToString());
         ExcelHelper.WriteData(ExcelHelper.ROOMCOUNT, row, _roomCount.ToString());
 
         ExcelHelper.WriteData(ExcelHelper.MAP_PCG_TYPE, row, _type.ToString());
+        ExcelHelper.WriteData(ExcelHelper.MAP_DIMENSIONS, row, _width + "x" + _height);
 
         if (_type == PCGType.CA) {
             CellularAutomataGenerator generator = _caGenerator;
-            ExcelHelper.WriteData(ExcelHelper.MAP_DIMENSIONS, row, generator.width + "x" + _caGenerator.height);
             ExcelHelper.WriteData(ExcelHelper.MAP_SEED, row, generator.seed);
             ExcelHelper.WriteData(ExcelHelper.MAP_FILLAMOUNT, row, generator.fillAmount.ToString());
             ExcelHelper.WriteData(ExcelHelper.MAP_BIRTHLIMIT, row, generator.birthLimit.ToString());
@@ -182,7 +186,6 @@ public class TraversabilityAnalyzer {
             ExcelHelper.WriteData(ExcelHelper.MAP_BLENDLAYERS, row, generator.blendLayers.ToString());
         }
         else {
-            ExcelHelper.WriteData(ExcelHelper.MAP_DIMENSIONS, row, "—");
             ExcelHelper.WriteData(ExcelHelper.MAP_SEED, row, "—");
             ExcelHelper.WriteData(ExcelHelper.MAP_FILLAMOUNT, row, "—");
             ExcelHelper.WriteData(ExcelHelper.MAP_BIRTHLIMIT, row, "—");

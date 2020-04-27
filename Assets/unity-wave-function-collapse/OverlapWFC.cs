@@ -191,7 +191,7 @@ public class OverlapWFC : MonoBehaviour{
 	  		}
             if (needsToAnalyze) {
                 needsToAnalyze = false;
-                new TraversabilityAnalyzer(tiles, width, depth, this);
+                TraversabilityAnalyzer.Analyze(tiles, width, depth, this);
             }
 	  	} catch (IndexOutOfRangeException) {
 	  		model = null;

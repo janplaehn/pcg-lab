@@ -211,7 +211,8 @@ public class PlatformData {
 
     private void SaveToExcel() {
         int row = ExcelHelper.GetEmptyRow(ExcelHelper.PLATFORMSHEET);
-
+        ExcelHelper.WriteData(ExcelHelper.PLATFORM_TEST_NUMBER, row, TraversabilityAnalyzer._testNumber.ToString());
+        ExcelHelper.WriteData(ExcelHelper.PLATFORM_TILECOUNT, row, _tiles.Count.ToString());
         if (_rockWidths.Count > 0) {
             ExcelHelper.WriteData(ExcelHelper.ROCKSIZE, row, GetAverageRockWidth().ToString());
         }
@@ -228,10 +229,10 @@ public class PlatformData {
         ExcelHelper.WriteData(ExcelHelper.ROCKDENSITY, row, GetRockDensity().ToString());
 
         ExcelHelper.WriteData(ExcelHelper.PLATFORM_PCG_TYPE, row, TraversabilityAnalyzer._type.ToString());
+        ExcelHelper.WriteData(ExcelHelper.PLATFORM_DIMENSIONS, row, TraversabilityAnalyzer._width + "x" + TraversabilityAnalyzer._height);
 
         if (TraversabilityAnalyzer._type == TraversabilityAnalyzer.PCGType.CA) {
             CellularAutomataGenerator generator = TraversabilityAnalyzer._caGenerator;
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_DIMENSIONS, row, generator.width + "x" + TraversabilityAnalyzer._caGenerator.height);
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, row, generator.seed);
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, row, generator.fillAmount.ToString());
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_BIRTHLIMIT, row, generator.birthLimit.ToString());
@@ -240,7 +241,6 @@ public class PlatformData {
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_BLENDLAYERS, row, generator.blendLayers.ToString());
         }
         else {
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_DIMENSIONS, row, "—");
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, row, "—");
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, row, "—");
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_BIRTHLIMIT, row, "—");

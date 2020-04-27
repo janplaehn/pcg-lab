@@ -49,7 +49,7 @@ public class CellularAutomataGenerator : MonoBehaviour
     }
 
     public void Analyze() {
-        new TraversabilityAnalyzer(map, width, height, this);
+        TraversabilityAnalyzer.Analyze(map, width, height, this);
     }
 
     private void GenerateMap() {
