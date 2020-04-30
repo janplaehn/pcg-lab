@@ -24,12 +24,12 @@ public static class TraversabilityAnalyzer {
         OTHER
     }
 
-    public static PCGType _type;
+    public static PCGType _pcgType;
 
     public static void Analyze(int[,] map, int width, int height, CellularAutomataGenerator generator) {
         _width = width;
         _height = height;
-        _type = PCGType.CA;
+        _pcgType = PCGType.CA;
         _caGenerator = generator;
         Analyze(map);
     }
@@ -38,14 +38,14 @@ public static class TraversabilityAnalyzer {
         _width = width;
         _height = height;
         _wfcGenerator = generator;
-        _type = PCGType.WFC;
+        _pcgType = PCGType.WFC;
         Analyze(map);
     }
 
     public static void Analyze(int[,] map, int width, int height, PCGType type) {
         _width = width;
         _height = height;
-        _type = type;
+        _pcgType = type;
         Analyze(map);
     }
 
@@ -56,12 +56,16 @@ public static class TraversabilityAnalyzer {
         _testNumber = ExcelHelper.GetTestNumber();
         EditorUtility.DisplayProgressBar("Analyzing Traversability", "Calculating Room Count", 0.2f);
         GetRoomCount(map);
-        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Finding Ground Tiles", 0.4f);
+        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Finding Ground Tiles", 0.3f);
         FindGroundTiles(map);
-        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Dividing Platforms", 0.6f);
+        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Dividing Platforms", 0.4f);
         DivideIntoPlatforms();
-        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Saving To Excel", 0.8f);
+        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Saving To Excel", 0.5f);
         MapDataToExcel();
+        EditorUtility.DisplayProgressBar("Analyzing Traversability", "Saving Input Data", 0.6f);
+        if (_pcgType == PCGType.WFC) {
+            UnityEngine.Object.FindObjectOfType<HiResScreenshots>().TakeHiResShot(_testNumber);
+        }
         EditorUtility.DisplayProgressBar("Analyzing Traversability", "Done!", 1f);
         ExcelHelper.Save();
         ExcelHelper.StartExcel();
@@ -173,10 +177,10 @@ public static class TraversabilityAnalyzer {
         ExcelHelper.WriteData(ExcelHelper.PLATFORMCOUNT, row, _platforms.Count.ToString());
         ExcelHelper.WriteData(ExcelHelper.ROOMCOUNT, row, _roomCount.ToString());
 
-        ExcelHelper.WriteData(ExcelHelper.MAP_PCG_TYPE, row, _type.ToString());
+        ExcelHelper.WriteData(ExcelHelper.MAP_PCG_TYPE, row, _pcgType.ToString());
         ExcelHelper.WriteData(ExcelHelper.MAP_DIMENSIONS, row, _width + "x" + _height);
 
-        if (_type == PCGType.CA) {
+        if (_pcgType == PCGType.CA) {
             CellularAutomataGenerator generator = _caGenerator;
             ExcelHelper.WriteData(ExcelHelper.MAP_SEED, row, generator.seed);
             ExcelHelper.WriteData(ExcelHelper.MAP_FILLAMOUNT, row, generator.fillAmount.ToString());
@@ -184,6 +188,14 @@ public static class TraversabilityAnalyzer {
             ExcelHelper.WriteData(ExcelHelper.MAP_DEATHLIMIT, row, generator.deathLimit.ToString());
             ExcelHelper.WriteData(ExcelHelper.MAP_SMOOTHITERATIONS, row, generator.smoothIterations.ToString());
             ExcelHelper.WriteData(ExcelHelper.MAP_BLENDLAYERS, row, generator.blendLayers.ToString());
+        }
+        else if (_pcgType == PCGType.WFC) {
+            ExcelHelper.WriteData(ExcelHelper.MAP_SEED, row, _wfcGenerator.seed.ToString());
+            ExcelHelper.WriteData(ExcelHelper.MAP_FILLAMOUNT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.MAP_BIRTHLIMIT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.MAP_DEATHLIMIT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.MAP_SMOOTHITERATIONS, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.MAP_BLENDLAYERS, row, "—");
         }
         else {
             ExcelHelper.WriteData(ExcelHelper.MAP_SEED, row, "—");

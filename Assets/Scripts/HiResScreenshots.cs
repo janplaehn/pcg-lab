@@ -5,8 +5,8 @@ using UnityEditor;
 
 public class HiResScreenshots : MonoBehaviour {
     [Header("Resolution")]
-    public int resWidth = 2732;
-    public int resHeight = 1536;
+    public int resWidth = 500;
+    public int resHeight = 500;
 
     [Header("Dependencies")]
     public Camera _camera = null;
@@ -14,6 +14,7 @@ public class HiResScreenshots : MonoBehaviour {
     [Header("Input")]
     public KeyCode _screenshotKey = KeyCode.F2;
     private bool takeHiResShot = false;
+    private int _testIndex = -1;
 
     public enum SaveLocation {
         Desktop,
@@ -32,6 +33,11 @@ public class HiResScreenshots : MonoBehaviour {
     }
 
     public string ScreenShotName(int width, int height) {
+        if (_testIndex != -1) {
+            return string.Format("{0}/screen_{1}.png",
+                             GetSavePath(),
+                             _testIndex);
+        }
         return string.Format("{0}/screen_{1}x{2}_{3}.png",
                              GetSavePath(),
                              width, height,
@@ -40,6 +46,12 @@ public class HiResScreenshots : MonoBehaviour {
 
     public void TakeHiResShot() {
         takeHiResShot = true;
+    }
+
+    public void TakeHiResShot(int testIndex) {
+        takeHiResShot = true;
+        _testIndex = testIndex;
+        LateUpdate();
     }
 
     void LateUpdate() {

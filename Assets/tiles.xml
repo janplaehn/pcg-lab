@@ -1,0 +1,83 @@
+<set>
+  <tiles>
+<tile name="Assets/Prefabs/Tiles/Background" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/Ground_TopLeft" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/Ground_TopSlopeLeft" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/Ground_TopRight" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/Ground_TopSlopeRight" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/Ground_Right" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/Chest" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/GroundCenter" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/Ground_Left" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/GroundBottom" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/Ground_Bottomright" symmetry="X" weight="1.0"/>
+<tile name="Assets/Prefabs/Tiles/Ground_Bottomleft" symmetry="X" weight="1.0"/>
+	</tiles>
+<neighbors>  <neighbor left="Assets/Prefabs/Tiles/Background 0" right="Assets/Prefabs/Tiles/Ground_Left 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 1" right="Assets/Prefabs/Tiles/Background 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Left 0" right="Assets/Prefabs/Tiles/GroundCenter 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Left 1" right="Assets/Prefabs/Tiles/Ground_Left 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 0" right="Assets/Prefabs/Tiles/GroundCenter 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 1" right="Assets/Prefabs/Tiles/GroundCenter 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 0" right="Assets/Prefabs/Tiles/Ground_Right 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Right 0" right="Assets/Prefabs/Tiles/Background 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Right 1" right="Assets/Prefabs/Tiles/GroundCenter 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 1" right="Assets/Prefabs/Tiles/GroundBottom 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Left 1" right="Assets/Prefabs/Tiles/GroundCenter 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 0" right="Assets/Prefabs/Tiles/Ground_TopLeft 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 1" right="Assets/Prefabs/Tiles/Ground_TopSlopeRight 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopLeft 0" right="Assets/Prefabs/Tiles/GroundCenter 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopLeft 1" right="Assets/Prefabs/Tiles/Background 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 1" right="Assets/Prefabs/Tiles/Ground_TopSlopeLeft 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Right 1" right="Assets/Prefabs/Tiles/Ground_Right 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 0" right="Assets/Prefabs/Tiles/Background 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 0" right="Assets/Prefabs/Tiles/Ground_TopSlopeLeft 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopSlopeLeft 1" right="Assets/Prefabs/Tiles/Background 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Left 1" right="Assets/Prefabs/Tiles/Ground_TopSlopeLeft 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 1" right="Assets/Prefabs/Tiles/Ground_TopLeft 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 0" right="Assets/Prefabs/Tiles/GroundBottom 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundBottom 0" right="Assets/Prefabs/Tiles/GroundCenter 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundBottom 1" right="Assets/Prefabs/Tiles/GroundCenter 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 0" right="Assets/Prefabs/Tiles/Ground_TopSlopeRight 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 1" right="Assets/Prefabs/Tiles/Ground_Right 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopSlopeRight 0" right="Assets/Prefabs/Tiles/Background 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopSlopeRight 1" right="Assets/Prefabs/Tiles/Background 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopSlopeLeft 0" right="Assets/Prefabs/Tiles/Ground_Right 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Right 1" right="Assets/Prefabs/Tiles/Chest 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopSlopeLeft 0" right="Assets/Prefabs/Tiles/Ground_TopLeft 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopLeft 0" right="Assets/Prefabs/Tiles/Ground_TopLeft 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 0" right="Assets/Prefabs/Tiles/Chest 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Chest 0" right="Assets/Prefabs/Tiles/Background 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Chest 1" right="Assets/Prefabs/Tiles/Background 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopSlopeLeft 0" right="Assets/Prefabs/Tiles/GroundCenter 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 1" right="Assets/Prefabs/Tiles/Ground_TopRight 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Right 1" right="Assets/Prefabs/Tiles/Ground_TopSlopeRight 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 1" right="Assets/Prefabs/Tiles/Ground_Bottomleft 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 1" right="Assets/Prefabs/Tiles/Ground_Bottomright 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopSlopeLeft 0" right="Assets/Prefabs/Tiles/Ground_TopRight 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopRight 0" right="Assets/Prefabs/Tiles/GroundCenter 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopRight 1" right="Assets/Prefabs/Tiles/Background 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 0" right="Assets/Prefabs/Tiles/Ground_TopRight 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 1" right="Assets/Prefabs/Tiles/Chest 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopRight 0" right="Assets/Prefabs/Tiles/Ground_TopSlopeRight 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 0" right="Assets/Prefabs/Tiles/Ground_Bottomleft 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomleft 0" right="Assets/Prefabs/Tiles/GroundBottom 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomleft 1" right="Assets/Prefabs/Tiles/Ground_TopSlopeLeft 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundBottom 0" right="Assets/Prefabs/Tiles/GroundBottom 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundBottom 1" right="Assets/Prefabs/Tiles/Ground_TopLeft 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundBottom 0" right="Assets/Prefabs/Tiles/Ground_Bottomright 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomright 0" right="Assets/Prefabs/Tiles/Background 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomright 1" right="Assets/Prefabs/Tiles/GroundCenter 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/GroundCenter 1" right="Assets/Prefabs/Tiles/Ground_Left 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomright 1" right="Assets/Prefabs/Tiles/Ground_Right 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_TopLeft 0" right="Assets/Prefabs/Tiles/Ground_TopSlopeRight 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomleft 1" right="Assets/Prefabs/Tiles/GroundCenter 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 0" right="Assets/Prefabs/Tiles/Ground_Bottomright 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomright 0" right="Assets/Prefabs/Tiles/Ground_Bottomright 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomleft 0" right="Assets/Prefabs/Tiles/GroundCenter 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomleft 1" right="Assets/Prefabs/Tiles/Ground_Left 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Bottomright 0" right="Assets/Prefabs/Tiles/GroundCenter 0"/>
+  <neighbor left="Assets/Prefabs/Tiles/Background 1" right="Assets/Prefabs/Tiles/Ground_Left 1"/>
+  <neighbor left="Assets/Prefabs/Tiles/Ground_Left 0" right="Assets/Prefabs/Tiles/GroundBottom 0"/>
+	</neighbors>
+</set>

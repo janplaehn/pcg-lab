@@ -228,10 +228,10 @@ public class PlatformData {
         }
         ExcelHelper.WriteData(ExcelHelper.ROCKDENSITY, row, GetRockDensity().ToString());
 
-        ExcelHelper.WriteData(ExcelHelper.PLATFORM_PCG_TYPE, row, TraversabilityAnalyzer._type.ToString());
+        ExcelHelper.WriteData(ExcelHelper.PLATFORM_PCG_TYPE, row, TraversabilityAnalyzer._pcgType.ToString());
         ExcelHelper.WriteData(ExcelHelper.PLATFORM_DIMENSIONS, row, TraversabilityAnalyzer._width + "x" + TraversabilityAnalyzer._height);
 
-        if (TraversabilityAnalyzer._type == TraversabilityAnalyzer.PCGType.CA) {
+        if (TraversabilityAnalyzer._pcgType == TraversabilityAnalyzer.PCGType.CA) {
             CellularAutomataGenerator generator = TraversabilityAnalyzer._caGenerator;
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, row, generator.seed);
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, row, generator.fillAmount.ToString());
@@ -239,6 +239,15 @@ public class PlatformData {
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_DEATHLIMIT, row, generator.deathLimit.ToString());
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_SMOOTHITERATIONS, row, generator.smoothIterations.ToString());
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_BLENDLAYERS, row, generator.blendLayers.ToString());
+        }
+        else if (TraversabilityAnalyzer._pcgType == TraversabilityAnalyzer.PCGType.WFC) {
+            OverlapWFC generator = TraversabilityAnalyzer._wfcGenerator;
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, row, generator.seed.ToString());
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BIRTHLIMIT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_DEATHLIMIT, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SMOOTHITERATIONS, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BLENDLAYERS, row, "—");
         }
         else {
             ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, row, "—");
