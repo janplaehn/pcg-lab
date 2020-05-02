@@ -22,10 +22,10 @@ public class TileData {
         }
         int xOffset = _xPos - otherTile._xPos;
         int yOffset = _yPos - otherTile._yPos;        
-        if (Mathf.Abs(xOffset) == 1 & yOffset == 1 && otherTile._isWallTile) { //If Diagonal and a on top, other must not be walltile
+        if (Mathf.Abs(xOffset) == 1 && yOffset == 1 && otherTile._isWallTile) {
             return false;
         }        
-        if (Mathf.Abs(xOffset) == 1 & yOffset == -1 && _isWallTile) { //If Diagonal and b on top, this must not be walltile
+        if (Mathf.Abs(xOffset) == 1 && yOffset == -1 && _isWallTile) {
             return false;
         }
         if (Mathf.Abs(xOffset) <= 1 && Mathf.Abs(yOffset) <= 1) {

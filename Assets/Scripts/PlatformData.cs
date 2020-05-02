@@ -103,7 +103,7 @@ public class PlatformData {
     enum AngleOffset {NEUTRAL, POSITIVE, NEGATIVE };
     float _currentRockWidth = -1;
     float _currentRockDistance = -1;
-    private void CalculateRoughness() {
+    private void CalculateRoughness() { //Todo: Clean up!
         AngleOffset offset = AngleOffset.NEUTRAL;
         TileData startTile = _tiles[0];
         TileData endTile = _tiles[_tiles.Count - 1];
@@ -117,36 +117,51 @@ public class PlatformData {
                 distance = (first.GetPosition() - previous.GetPosition()).magnitude;
             }
             float tileSlope = SlopeBetweenTiles(first, second);
-            if (tileSlope > _platformSlope && offset != AngleOffset.POSITIVE) {
-                offset = AngleOffset.POSITIVE;
-                SaveRock();
-                InitRock();
-                
+
+            AngleOffset previousOffset = offset;
+            offset = GetAngleOffset(tileSlope);
+
+            switch (offset) {
+                case AngleOffset.NEUTRAL:
+                    if (previousOffset == AngleOffset.NEGATIVE) {
+                        SaveRock();
+                    }                   
+                    break;
+                case AngleOffset.POSITIVE:
+                    if (previousOffset != AngleOffset.POSITIVE) {
+                        SaveRock();
+                        InitRock();
+                    }
+                    break;
+                case AngleOffset.NEGATIVE:
+                    break;
+                default:
+                    break;
             }
-            else if (tileSlope == _platformSlope && offset != AngleOffset.NEUTRAL) {
-                offset = AngleOffset.NEUTRAL;
-                SaveRock();
-            }
-            else if (tileSlope < _platformSlope) {
-                offset = AngleOffset.NEGATIVE;
+
+            if (_currentRockWidth != UNASSIGNED) {
                 ExpandRock(distance);
             }
-            else {
-                ExpandRock(distance);
-            }
-            if (_currentRockWidth == UNASSIGNED) {
+            if (_currentRockDistance != UNASSIGNED) {
                 ExpandDistance(distance);
             }
         }
+    }
+
+    private AngleOffset GetAngleOffset(float tileSlope) {
+        if (tileSlope > _platformSlope) {
+            return AngleOffset.POSITIVE;
+        }
+        if (tileSlope < _platformSlope) {
+            return AngleOffset.NEGATIVE;
+        }
+        return AngleOffset.NEUTRAL;
     }
 
     private void SaveRock() {
         if (_currentRockWidth != UNASSIGNED) {
             _rockWidths.Add(_currentRockWidth);
             _currentRockDistance = 0;
-        }
-        else {
-            _currentRockDistance = UNASSIGNED;
         }
         _currentRockWidth = UNASSIGNED;       
     }
@@ -157,16 +172,12 @@ public class PlatformData {
         _currentRockDistance = UNASSIGNED;
     }
 
-    private void ExpandRock(float distance) {
-        if (_currentRockWidth != UNASSIGNED) {
-            _currentRockWidth += distance;
-        }                
+    private void ExpandRock(float distance) {       
+        _currentRockWidth += distance;           
     }
 
     private void ExpandDistance(float distance) {
-        if (_currentRockDistance != UNASSIGNED) {
-            _currentRockDistance += distance;
-        }
+        _currentRockDistance += distance;
     }
 
     private float SlopeBetweenTiles(TileData first, TileData second) {
@@ -190,7 +201,7 @@ public class PlatformData {
         foreach (float width in _rockWidths) {
             average += width;
         }
-        return average / _rockWidths.Count;
+        return (average / _rockWidths.Count);
     }
 
     private float GetAverageRockDistance() {
@@ -201,7 +212,7 @@ public class PlatformData {
         foreach (float distance in _rockDistances) {
             average += distance;
         }
-        return average / _rockDistances.Count;
+        return (average / _rockDistances.Count);
     }
 
     private float GetRockDensity() {
