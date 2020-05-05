@@ -4,6 +4,8 @@ using UnityEngine;
 using OfficeOpenXml;
 using System.IO;
 using UnityEditor;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 
 public static class ExcelHelper {
 
@@ -18,9 +20,11 @@ public static class ExcelHelper {
         }
     }
 
-    public static readonly string MAPSHEET = "Maps";
-    public static readonly string PLATFORMSHEET = "Platforms";
-    public static readonly string CHUNKSHEET = "Chunks";
+    public const string MAPSHEET = "Maps";
+    public const string PLATFORMSHEET = "Platforms";
+    public const string CHUNKSHEET = "Chunks";
+
+    private static int _currentRow = 0;
 
     #region Excel Chunk Data
     public static readonly DataColumn CHUNK_TEST_NUMBER = new DataColumn(CHUNKSHEET, "A");
@@ -33,9 +37,10 @@ public static class ExcelHelper {
     #region Excel Platform Data
     public static readonly DataColumn PLATFORM_TEST_NUMBER = new DataColumn(PLATFORMSHEET, "A");
     public static readonly DataColumn PLATFORM_TILECOUNT = new DataColumn(PLATFORMSHEET, "B");
-    public static readonly DataColumn ROCKSIZE = new DataColumn(PLATFORMSHEET, "C");
-    public static readonly DataColumn ROCKDISTANCE = new DataColumn(PLATFORMSHEET, "D");
-    public static readonly DataColumn ROCKDENSITY = new DataColumn(PLATFORMSHEET, "E");
+    public static readonly DataColumn ROCKDISTANCE = new DataColumn(PLATFORMSHEET, "C");
+    public static readonly DataColumn SMALLROCKDENSITY = new DataColumn(PLATFORMSHEET, "D");
+    public static readonly DataColumn LARGEROCKDENSITY = new DataColumn(PLATFORMSHEET, "E");
+    public static readonly DataColumn ROUGHNESS = new DataColumn(PLATFORMSHEET, "F");
     #endregion
 
     #region Excel Map Data
@@ -54,14 +59,14 @@ public static class ExcelHelper {
     public static readonly DataColumn CHUNK_SMOOTHITERATIONS = new DataColumn(CHUNKSHEET, "L");
     public static readonly DataColumn CHUNK_BLENDLAYERS = new DataColumn(CHUNKSHEET, "M");
 
-    public static readonly DataColumn PLATFORM_PCG_TYPE = new DataColumn(PLATFORMSHEET, "F");
-    public static readonly DataColumn PLATFORM_DIMENSIONS = new DataColumn(PLATFORMSHEET, "G");
-    public static readonly DataColumn PLATFORM_SEED = new DataColumn(PLATFORMSHEET, "H");
-    public static readonly DataColumn PLATFORM_FILLAMOUNT = new DataColumn(PLATFORMSHEET, "I");
-    public static readonly DataColumn PLATFORM_BIRTHLIMIT = new DataColumn(PLATFORMSHEET, "J");
-    public static readonly DataColumn PLATFORM_DEATHLIMIT = new DataColumn(PLATFORMSHEET, "K");
-    public static readonly DataColumn PLATFORM_SMOOTHITERATIONS = new DataColumn(PLATFORMSHEET, "L");
-    public static readonly DataColumn PLATFORM_BLENDLAYERS = new DataColumn(PLATFORMSHEET, "M");
+    public static readonly DataColumn PLATFORM_PCG_TYPE = new DataColumn(PLATFORMSHEET, "G");
+    public static readonly DataColumn PLATFORM_DIMENSIONS = new DataColumn(PLATFORMSHEET, "H");
+    public static readonly DataColumn PLATFORM_SEED = new DataColumn(PLATFORMSHEET, "I");
+    public static readonly DataColumn PLATFORM_FILLAMOUNT = new DataColumn(PLATFORMSHEET, "J");
+    public static readonly DataColumn PLATFORM_BIRTHLIMIT = new DataColumn(PLATFORMSHEET, "K");
+    public static readonly DataColumn PLATFORM_DEATHLIMIT = new DataColumn(PLATFORMSHEET, "L");
+    public static readonly DataColumn PLATFORM_SMOOTHITERATIONS = new DataColumn(PLATFORMSHEET, "M");
+    public static readonly DataColumn PLATFORM_BLENDLAYERS = new DataColumn(PLATFORMSHEET, "N");
 
     public static readonly DataColumn MAP_PCG_TYPE = new DataColumn(MAPSHEET, "D");
     public static readonly DataColumn MAP_DIMENSIONS = new DataColumn(MAPSHEET, "E");
@@ -83,11 +88,6 @@ public static class ExcelHelper {
             EditorUtility.DisplayDialog("Excel running", "Close the Excel Spreadsheet before running this script", "Ok");
             return false;
         }
-    }
-
-    public static void WriteData(DataColumn column, string data) {
-        int row = GetEmptyRow(column);
-        WriteData(column, row, data);
     }
 
     public static int GetEmptyRow(DataColumn column) {
@@ -142,10 +142,26 @@ public static class ExcelHelper {
         }
     }
 
-    public static void WriteData(DataColumn column, int row, string data) {
+    public static void SetRow(int row) {
+        _currentRow = row;
+    }
+
+    public static void WriteData(DataColumn column, int row, object data) {
         ExcelWorksheet sheet = xls.Workbook.Worksheets[column._sheet];
         string address = column._col + row;
-        sheet.Cells[address].Value = data;
+        sheet.Cells[address].Value = data.ToString();
+    }
+
+    public static void WriteData(DataColumn column, object data) {
+        WriteData(column, _currentRow, data);
+    }
+
+    public static void WriteUnassigned(DataColumn column) {
+        WriteData(column, "—");
+    }
+
+    public static void WriteUnassigned(DataColumn column, int row) {
+        WriteData(column, row, "—");
     }
 
 

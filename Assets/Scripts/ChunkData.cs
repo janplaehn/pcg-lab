@@ -70,43 +70,43 @@ public class ChunkData {
 
     private void SaveToExcel() {
         int row = ExcelHelper.GetEmptyRow(ExcelHelper.CHUNKSHEET);
+        ExcelHelper.SetRow(row);
+        ExcelHelper.WriteData(ExcelHelper.CHUNK_TEST_NUMBER, TraversabilityAnalyzer._testNumber);
+        ExcelHelper.WriteData(ExcelHelper.ANGLE, _slopeAngle);
+        ExcelHelper.WriteData(ExcelHelper.ANGLE_TYPE, _angleType);
+        ExcelHelper.WriteData(ExcelHelper.SMALL_DISCONTINUITIES, _smallDiscontinuities);
+        ExcelHelper.WriteData(ExcelHelper.LARGE_DISCONTINUITIES, _largeDiscontinuities);
 
-        ExcelHelper.WriteData(ExcelHelper.CHUNK_TEST_NUMBER, row, TraversabilityAnalyzer._testNumber.ToString());
-        ExcelHelper.WriteData(ExcelHelper.ANGLE, row, _slopeAngle.ToString());
-        ExcelHelper.WriteData(ExcelHelper.ANGLE_TYPE, row, _angleType);
-        ExcelHelper.WriteData(ExcelHelper.SMALL_DISCONTINUITIES, row, _smallDiscontinuities.ToString());
-        ExcelHelper.WriteData(ExcelHelper.LARGE_DISCONTINUITIES, row, _largeDiscontinuities.ToString());
-
-        ExcelHelper.WriteData(ExcelHelper.CHUNK_PCG_TYPE, row, TraversabilityAnalyzer._pcgType.ToString());
-        ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, row, TraversabilityAnalyzer._width + "x" + TraversabilityAnalyzer._height);
+        ExcelHelper.WriteData(ExcelHelper.CHUNK_PCG_TYPE, TraversabilityAnalyzer._pcgType);
+        ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, TraversabilityAnalyzer._width + "x" + TraversabilityAnalyzer._height);
 
         if (TraversabilityAnalyzer._pcgType == TraversabilityAnalyzer.PCGType.CA) {
             CellularAutomataGenerator generator = TraversabilityAnalyzer._caGenerator;
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, row, generator.seed);
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, row, generator.fillAmount.ToString());
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_BIRTHLIMIT, row, generator.birthLimit.ToString());
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_DEATHLIMIT, row, generator.deathLimit.ToString());
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_SMOOTHITERATIONS, row, generator.smoothIterations.ToString());
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_BLENDLAYERS, row, generator.blendLayers.ToString());
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, generator.seed);
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, generator.fillAmount);
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_BIRTHLIMIT, generator.birthLimit);
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_DEATHLIMIT, generator.deathLimit);
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_SMOOTHITERATIONS, generator.smoothIterations);
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_BLENDLAYERS, generator.blendLayers);
         }
         else if (TraversabilityAnalyzer._pcgType == TraversabilityAnalyzer.PCGType.WFC) {
             OverlapWFC generator = TraversabilityAnalyzer._wfcGenerator;
 
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, row, generator.width + "x" + generator.depth);
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, row, generator.seed.ToString());
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_BIRTHLIMIT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_DEATHLIMIT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_SMOOTHITERATIONS, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_BLENDLAYERS, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_DIMENSIONS, generator.width + "x" + generator.depth);
+            ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, generator.seed);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_FILLAMOUNT);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_BIRTHLIMIT);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_DEATHLIMIT);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_SMOOTHITERATIONS);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_BLENDLAYERS);
         }
         else {            
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_SEED, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_FILLAMOUNT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_BIRTHLIMIT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_DEATHLIMIT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_SMOOTHITERATIONS, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.CHUNK_BLENDLAYERS, row, "—");
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_SEED);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_FILLAMOUNT);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_BIRTHLIMIT);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_DEATHLIMIT);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_SMOOTHITERATIONS);
+            ExcelHelper.WriteUnassigned(ExcelHelper.CHUNK_BLENDLAYERS);
         }
 
     }

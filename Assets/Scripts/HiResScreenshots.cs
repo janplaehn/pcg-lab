@@ -65,7 +65,7 @@ public class HiResScreenshots : MonoBehaviour {
             screenShot.ReadPixels(new Rect(0, 0, resWidth, resHeight), 0, 0);
             _camera.targetTexture = null;
             RenderTexture.active = null;
-            Destroy(rt);
+            DestroyImmediate(rt);
             byte[] bytes = screenShot.EncodeToPNG();
             string filename = ScreenShotName(resWidth, resHeight);
             System.IO.File.WriteAllBytes(filename, bytes);

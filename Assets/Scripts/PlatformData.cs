@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlatformData {
@@ -10,6 +11,18 @@ public class PlatformData {
 
     public List<float> _rockWidths = new List<float>();
     public List<float> _rockDistances = new List<float>();
+    public int _smallRocks = 0;
+    public int _largeRocks = 0;
+
+    public const int MAXSMALLROCKSIZE = 4;
+
+    public enum Roughness {
+        SMOOTH,
+        ROUGH,
+        BUMPY,
+        ROCKY
+    }
+    public Roughness _roughness = Roughness.SMOOTH;
 
     public PlatformData(List<TileData> tiles) {
         _tiles = new List<TileData>(tiles);
@@ -23,8 +36,57 @@ public class PlatformData {
             List<TileData> chunkTiles = GetChunkTiles(i);
             _chunks.Add(new ChunkData(chunkTiles));
         }
+        CalculateRockData();
         CalculateRoughness();
         SaveToExcel();
+    }
+
+    public enum Density { FEW, MANY };
+    public enum Separation { FAR, CLOSE };
+
+    private void CalculateRoughness() {
+        Density smallRockDensity, largeRockDensity;
+        Separation separationDistance;
+
+        //Small Rock Density
+        if (GetSmallRockDensity() < 0.1f) {
+            smallRockDensity = Density.FEW;
+        }
+        else {
+            smallRockDensity = Density.MANY;
+        }
+
+        //Large Rock Density
+        if (GetLargeRockDensity() < 0.1f) {
+            largeRockDensity = Density.FEW;
+        }
+        else {
+            largeRockDensity = Density.MANY;
+        }
+
+        //Separation
+        if (GetAverageRockDistance() == UNASSIGNED) {
+            separationDistance = Separation.FAR;
+        }
+        else if (GetAverageRockDistance() < 7) {
+            separationDistance = Separation.CLOSE;
+        }
+        else {
+            separationDistance = Separation.FAR;
+        }
+
+        if (smallRockDensity == Density.FEW && largeRockDensity == Density.FEW) {
+            _roughness = Roughness.SMOOTH;
+        }
+        else if (smallRockDensity == Density.MANY && largeRockDensity == Density.FEW) {
+            _roughness = Roughness.ROUGH;
+        }
+        else if (largeRockDensity == Density.MANY && separationDistance == Separation.FAR) {
+            _roughness = Roughness.BUMPY;
+        }
+        else {
+            _roughness = Roughness.ROCKY;
+        }
     }
 
     private List<TileData> GetChunkTiles(int index) {
@@ -103,7 +165,7 @@ public class PlatformData {
     enum AngleOffset {NEUTRAL, POSITIVE, NEGATIVE };
     float _currentRockWidth = -1;
     float _currentRockDistance = -1;
-    private void CalculateRoughness() { //Todo: Clean up!
+    private void CalculateRockData() { //Todo: Clean up!
         AngleOffset offset = AngleOffset.NEUTRAL;
         TileData startTile = _tiles[0];
         TileData endTile = _tiles[_tiles.Count - 1];
@@ -146,6 +208,12 @@ public class PlatformData {
                 ExpandDistance(distance);
             }
         }
+
+        //Remove last distance if no last rock assigned
+        if (_rockDistances.Count > 0 && _rockDistances.Count >= _rockWidths.Count) {
+            int last = _rockDistances.Count - 1;
+            _rockDistances.RemoveAt(last);
+        }
     }
 
     private AngleOffset GetAngleOffset(float tileSlope) {
@@ -161,13 +229,25 @@ public class PlatformData {
     private void SaveRock() {
         if (_currentRockWidth != UNASSIGNED) {
             _rockWidths.Add(_currentRockWidth);
+            if (_rockDistances.Count > 0) {
+                _rockDistances[_rockDistances.Count - 1] += _currentRockWidth / 2; //Add the rock radius to the last saved rockdistance;
+            }
+            if (_currentRockWidth <= MAXSMALLROCKSIZE) {
+                _smallRocks++;
+            }
+            else {
+                _largeRocks++;
+            }
             _currentRockDistance = 0;
         }
         _currentRockWidth = UNASSIGNED;       
     }
 
     private void InitRock() {
-        if (_currentRockDistance != UNASSIGNED) _rockDistances.Add(_currentRockDistance);
+        if (_currentRockDistance != UNASSIGNED) {
+            float distance = (_rockWidths[_rockWidths.Count - 1]/2) + _currentRockDistance; //Add the radius of the last rock
+            _rockDistances.Add(distance);
+        }
         _currentRockWidth = 0;
         _currentRockDistance = UNASSIGNED;
     }
@@ -193,17 +273,6 @@ public class PlatformData {
         return angle;
     }
 
-    private float GetAverageRockWidth() {
-        if (_rockWidths.Count == 0) {
-            return -1;
-        }
-        float average = 0;
-        foreach (float width in _rockWidths) {
-            average += width;
-        }
-        return (average / _rockWidths.Count);
-    }
-
     private float GetAverageRockDistance() {
         if (_rockDistances.Count == 0) {
             return -1;
@@ -215,58 +284,60 @@ public class PlatformData {
         return (average / _rockDistances.Count);
     }
 
-    private float GetRockDensity() {
-        if (_rockWidths.Count == 0) return 0;
-        return (float)_rockWidths.Count / (float)_tiles.Count;
+    private float GetSmallRockDensity() {
+        if (_smallRocks == 0) return 0;
+        return (float)_smallRocks / (float)_tiles.Count;
+    }
+
+    private float GetLargeRockDensity() {
+        if (_largeRocks == 0) return 0;
+        return (float)_largeRocks / (float)_tiles.Count;
     }
 
     private void SaveToExcel() {
         int row = ExcelHelper.GetEmptyRow(ExcelHelper.PLATFORMSHEET);
-        ExcelHelper.WriteData(ExcelHelper.PLATFORM_TEST_NUMBER, row, TraversabilityAnalyzer._testNumber.ToString());
-        ExcelHelper.WriteData(ExcelHelper.PLATFORM_TILECOUNT, row, _tiles.Count.ToString());
-        if (_rockWidths.Count > 0) {
-            ExcelHelper.WriteData(ExcelHelper.ROCKSIZE, row, GetAverageRockWidth().ToString());
-        }
-        else {
-            ExcelHelper.WriteData(ExcelHelper.ROCKSIZE, row, "—");
-        }
+        ExcelHelper.SetRow(row);
+        ExcelHelper.WriteData(ExcelHelper.PLATFORM_TEST_NUMBER, TraversabilityAnalyzer._testNumber);
+        ExcelHelper.WriteData(ExcelHelper.PLATFORM_TILECOUNT, _tiles.Count);
 
         if (_rockDistances.Count > 0) {
-            ExcelHelper.WriteData(ExcelHelper.ROCKDISTANCE, row, GetAverageRockDistance().ToString());
+            ExcelHelper.WriteData(ExcelHelper.ROCKDISTANCE, GetAverageRockDistance());
         }
         else {
-            ExcelHelper.WriteData(ExcelHelper.ROCKDISTANCE, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.ROCKDISTANCE, "—");
         }
-        ExcelHelper.WriteData(ExcelHelper.ROCKDENSITY, row, GetRockDensity().ToString());
+        ExcelHelper.WriteData(ExcelHelper.SMALLROCKDENSITY, GetSmallRockDensity());
+        ExcelHelper.WriteData(ExcelHelper.LARGEROCKDENSITY, GetLargeRockDensity());
+        ExcelHelper.WriteData(ExcelHelper.ROUGHNESS, _roughness);
 
-        ExcelHelper.WriteData(ExcelHelper.PLATFORM_PCG_TYPE, row, TraversabilityAnalyzer._pcgType.ToString());
-        ExcelHelper.WriteData(ExcelHelper.PLATFORM_DIMENSIONS, row, TraversabilityAnalyzer._width + "x" + TraversabilityAnalyzer._height);
+        ExcelHelper.WriteData(ExcelHelper.PLATFORM_PCG_TYPE, TraversabilityAnalyzer._pcgType);
+        ExcelHelper.WriteData(ExcelHelper.PLATFORM_DIMENSIONS, TraversabilityAnalyzer._width + "x" + TraversabilityAnalyzer._height);
 
         if (TraversabilityAnalyzer._pcgType == TraversabilityAnalyzer.PCGType.CA) {
             CellularAutomataGenerator generator = TraversabilityAnalyzer._caGenerator;
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, row, generator.seed);
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, row, generator.fillAmount.ToString());
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BIRTHLIMIT, row, generator.birthLimit.ToString());
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_DEATHLIMIT, row, generator.deathLimit.ToString());
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SMOOTHITERATIONS, row, generator.smoothIterations.ToString());
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BLENDLAYERS, row, generator.blendLayers.ToString());
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, generator.seed);
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, generator.fillAmount);
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BIRTHLIMIT, generator.birthLimit);
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_DEATHLIMIT, generator.deathLimit);
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SMOOTHITERATIONS, generator.smoothIterations);
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BLENDLAYERS, generator.blendLayers);
         }
         else if (TraversabilityAnalyzer._pcgType == TraversabilityAnalyzer.PCGType.WFC) {
             OverlapWFC generator = TraversabilityAnalyzer._wfcGenerator;
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, row, generator.seed.ToString());
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BIRTHLIMIT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_DEATHLIMIT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SMOOTHITERATIONS, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BLENDLAYERS, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, generator.seed);
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BIRTHLIMIT, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_DEATHLIMIT, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SMOOTHITERATIONS, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BLENDLAYERS, "—");
         }
         else {
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BIRTHLIMIT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_DEATHLIMIT, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SMOOTHITERATIONS, row, "—");
-            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BLENDLAYERS, row, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SEED, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_FILLAMOUNT, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BIRTHLIMIT, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_DEATHLIMIT, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_SMOOTHITERATIONS, "—");
+            ExcelHelper.WriteData(ExcelHelper.PLATFORM_BLENDLAYERS, "—");
         }
 
     }
